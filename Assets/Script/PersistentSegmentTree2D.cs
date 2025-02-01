@@ -20,12 +20,41 @@ public class PersistentSegmentTree2D
         }
     }
 
-    private int NodeCount = 40000;
-    private List<TreeNode> tree = new List<TreeNode>();
+    private static int nodeCount = 40000;
+    private static int versionCount = 40;
+    private TreeNode[] tree = new TreeNode[PersistentSegmentTree2D.nodeCount];
+    private int[] versionRoot = new int[PersistentSegmentTree2D.versionCount];
     /// <summary>
-    /// 节点小标，从1开始，0当成空节点判断
+    /// 节点下标
     /// </summary>
-    private int idx = 1;
+    private int nodeIdx = 0;
+    /// <summary>
+    /// 版本下标
+    /// </summary>
+    private int versionIdx = 0;
+
+    /// <summary>
+    /// 重置
+    /// </summary>
+    public void reset()
+    {
+        this.nodeIdx = 0;
+        this.versionIdx = 0;
+        this.versionRoot[this.versionIdx] = this.build(1, 20, 1, 20, true);
+    }
+
+    /// <summary>
+    /// 放置方块
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="z"></param>
+    /// <param name="type"></param>
+    public void putCube(int x, int z, GraphObjType type)
+    {
+        int preVersionIdx = this.versionIdx;
+        this.versionIdx++;
+        this.versionRoot[this.versionIdx] = insert(preVersionIdx, 1, 20, 1, 20, x, z, type, true);
+    }
 
     /// <summary>
     /// 建立线段树
@@ -36,10 +65,10 @@ public class PersistentSegmentTree2D
     /// <param name="zTop">当前节点对应的区间范围</param>
     /// <param name="isXAxis">当前是否对x轴进行划分</param>
     /// <returns></returns>
-    int build(int xLeft, int xRight, int zBottom, int zTop, bool isXAxis)
+    private int build(int xLeft, int xRight, int zBottom, int zTop, bool isXAxis)
     {
         //返回标志值
-        int p = idx++;
+        int p = nodeIdx++;
 
         tree[p].xLeft = xLeft;
         tree[p].xRight = xRight;
@@ -86,10 +115,10 @@ public class PersistentSegmentTree2D
     /// <param name="type">放置的方块类型</param>
     /// <param name="isXAxis">当前是否划分x轴</param>
     /// <returns></returns>
-    int insert(int preNode, int xLeft, int xRight, int zBottom, int zTop, int x, int z, GraphObjType type, bool isXAxis)
+    private int insert(int preNode, int xLeft, int xRight, int zBottom, int zTop, int x, int z, GraphObjType type, bool isXAxis)
     {
         //返回值是新版本树节点的标志值
-        int curNode = idx++;
+        int curNode = nodeIdx++;
         tree[curNode] = tree[preNode];  //先将上一个版本信息复制过来
         if (xLeft == xRight && zBottom == zTop)
         {  
