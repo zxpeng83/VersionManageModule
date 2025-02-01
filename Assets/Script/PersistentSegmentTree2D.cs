@@ -134,11 +134,11 @@ public class PersistentSegmentTree2D
             int xMid = (xLeft + xRight) >> 1;
             if (x <= xMid)
             {
-                tree[curNode].lTree = this.insert(tree[curNode].lTree, xLeft, xMid, zBottom, zTop, x, z, type, !isXAxis);
+                tree[curNode].lTree = this.insert(tree[preNode].lTree, xLeft, xMid, zBottom, zTop, x, z, type, !isXAxis);
             }
             else
             {
-                tree[curNode].rTree = this.insert(tree[curNode].rTree, xMid + 1, xRight, zBottom, zTop, x, z, type, !isXAxis);
+                tree[curNode].rTree = this.insert(tree[preNode].rTree, xMid + 1, xRight, zBottom, zTop, x, z, type, !isXAxis);
             }
         }
         else
@@ -146,11 +146,11 @@ public class PersistentSegmentTree2D
             int zMid = (zBottom + zTop) >> 1;
             if(z <= zMid)
             {
-                tree[curNode].lTree = this.insert(tree[curNode].lTree, xLeft, xRight, zBottom, zMid, x, z, type, !isXAxis);
+                tree[curNode].lTree = this.insert(tree[preNode].lTree, xLeft, xRight, zBottom, zMid, x, z, type, !isXAxis);
             }
             else
             {
-                tree[curNode].rTree = this.insert(tree[curNode].rTree, xLeft, xRight, zMid+1, zBottom, x, z, type, !isXAxis);
+                tree[curNode].rTree = this.insert(tree[preNode].rTree, xLeft, xRight, zMid+1, zBottom, x, z, type, !isXAxis);
             }
         }
         
