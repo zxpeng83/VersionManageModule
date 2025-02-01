@@ -1,26 +1,17 @@
 namespace GameConfig
 {
     /// <summary>
-    /// 游戏模式
-    /// </summary>
-    public enum GameMode
-    {
-        AStar,
-    }
-
-    /// <summary>
     /// 地图上放置的物体类型
     /// </summary>
     public enum GraphObjType
     {
         None = 0,
+        Wall = -1,
 
-        Target = -1,
-        Barrier = 1,
-        Wall = 2,
-        Char = 3,
+        Red = 1,
+        Green = 2,
+        Blue = 3,
         Fake = 4,
-        Pet = 5,
     }
 
     /// <summary>
@@ -41,5 +32,33 @@ namespace GameConfig
     {
         public static int[] dx = { -1, -1, 0, 1, 1, 1, 0, -1 };
         public static int[] dy = { 0, 1, 1, 1, 0, -1, -1, -1 };
+    }
+
+    public class TreeNode
+    {
+        //当前节点对应的二维区间
+        public int xLeft = -1;
+        public int xRight = -1;
+        public int zBottom = -1;
+        public int zTop = -1;
+
+        /// <summary>
+        /// 左子树
+        /// </summary>
+        public int lTree = -1;
+        /// <summary>
+        /// 右子树
+        /// </summary>
+        public int rTree = -1;
+
+        /// <summary>
+        /// 当前子树放的方块数量
+        /// </summary>
+        public int count = 0;
+
+        /// <summary>
+        /// 当前位置的方块类型，只有子节点才有意义
+        /// </summary>
+        public GraphObjType type = GraphObjType.None;
     }
 }

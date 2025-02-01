@@ -22,20 +22,6 @@ public class GraphMgr: MonoBehaviour
     /// 地图上要放置物体时的预瞄物体
     /// </summary>
     private GameObject fakeObj = null;
-    /// <summary>
-    /// 角色在地图上的坐标
-    /// </summary>
-    private List<Vector2> charGraphIdx = new List<Vector2>();
-
-    /// <summary>
-    /// 当前目标点
-    /// </summary>
-    private Vector2Int curTarget = Vector2Int.zero;
-
-    /// <summary>
-    /// 宠物
-    /// </summary>
-    private PetMgr pet = null;
 
     private void Awake()
     {
@@ -92,7 +78,6 @@ public class GraphMgr: MonoBehaviour
                 this.graph[i][j] = (int)GraphObjType.None;
             }
         }
-        this.charGraphIdx.Clear();
 
         //扫描动态物体
         foreach (var item in objs)
@@ -107,51 +92,12 @@ public class GraphMgr: MonoBehaviour
 
             if (!Enum.TryParse(type, out GraphObjType eType)) continue;
 
-            // 需要记录进地图的物体:  目标                          障碍物                  角色      (预瞄物体不记录)
-            if(eType == GraphObjType.Target || eType == GraphObjType.Barrier || eType == GraphObjType.Char)
+            // 需要记录进地图的物体:  Red方块                  Green方块              Blue方块
+            if(eType == GraphObjType.Red || eType == GraphObjType.Green || eType == GraphObjType.Blue)
             {
                 this.graph[xx][zz] = (int)eType;
-                if(eType == GraphObjType.Char)
-                {
-                    this.charGraphIdx.Add(new Vector2(xx, zz));
-                }
-
-                if(eType == GraphObjType.Target)
-                {
-                    this.curTarget = new Vector2Int(xx, zz);
-                }
             }
         }
-    }
-
-    /// <summary>
-    /// 获取当前目标节点
-    /// </summary>
-    /// <returns></returns>
-    public T? getCurTarget<T>() where T : struct
-    {
-        if(this.curTarget == Vector2Int.zero) return null;
-
-        if (typeof(T) == typeof(Vector2))
-        {
-            return (T)(object)this.curTarget;
-        }
-        else if (typeof(T) == typeof(Vector3))
-        {
-            Vector3 rtn = new Vector3(this.curTarget.x, 0, this.curTarget.y);
-            return (T)(object)rtn;
-        }
-        else if (typeof(T) == typeof(Vector2Int))
-        {
-            return (T)(object)this.curTarget;
-        }
-        else if (typeof(T) == typeof(Vector3Int))
-        {
-            Vector3Int rtn = new Vector3Int(this.curTarget.x, 0, this.curTarget.y);
-            return (T)(object)rtn;
-        }
-
-        return null;
     }
 
     /// <summary>
@@ -195,13 +141,13 @@ public class GraphMgr: MonoBehaviour
     }
 
     /// <summary>
-    /// 在地图上放置目标或障碍物物体
+    /// 在地图上放置Red、Green、Blue方块
     /// </summary>
     /// <param name="pos">地图的格子坐标</param>
     /// <param name="type"></param>
-    public void putTarOrBarObj(Vector3 pos, GraphObjType type)
+    public bool putCube(Vector3 pos, GraphObjType type)
     {
-        if (type != GraphObjType.Target && type != GraphObjType.Barrier) return;
+        if (type != GraphObjType.Red && type != GraphObjType.Green || type != GraphObjType.Blue) return false;
 
         GameObject obj = ObjPool.instance.getObj(type.ToString(), (obj) =>
         {
@@ -218,24 +164,22 @@ public class GraphMgr: MonoBehaviour
 
             this.setVal(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.z), (int)type);
 
-            if(type == GraphObjType.Target)
-            {
-                this.curTarget = new Vector2Int(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.z));
-            }
+            return true;
         }
         else
         {
             Debug.LogError("生成物体错误");
+            return false;
         }
     }
 
     /// <summary>
-    /// 移除已经放置的目标或障碍物物体
+    /// 移除已经放置的方块
     /// </summary>
     /// <param name="type">要清除的类型,全部清除</param>
-    public void removeTarOrBarObj(GraphObjType type)
+    public void removeCube(GraphObjType type)
     {
-        if (type != GraphObjType.Target && type != GraphObjType.Barrier) return;
+        if (type != GraphObjType.Red && type != GraphObjType.Green || type != GraphObjType.Blue) return;
 
         GameObject[] gos = new GameObject[this.graphAnchor.transform.childCount];
 
@@ -263,87 +207,6 @@ public class GraphMgr: MonoBehaviour
                 });
             }
         }
-
-        if(type == GraphObjType.Target)
-        {
-            this.curTarget = Vector2Int.zero;
-        }
-    }
-
-    /// <summary>
-    /// 在角色附近放置宠物
-    /// </summary>
-    public void putPet()
-    {
-        if (this.pet != null) return;
-        ObjPool.instance.getObj(GraphObjType.Pet.ToString(), (go) =>
-        {
-            var _petMgr = go.GetComponent<PetMgr>();
-            this.pet = _petMgr;
-            go.transform.parent = this.graphAnchor.transform;
-            ObjTool.instance.setLayWithChild(go, 2);
-            ObjTool.instance.setNameWithChild(go, GraphObjType.Pet.ToString());
-        });
-
-        for(int i = 0; i < MoveDirec.dx.Length; i++)
-        {
-            int xx = Mathf.RoundToInt(CharMgr.charList[0].getGraphIdx().pos.x) + MoveDirec.dx[i];
-            int zz = Mathf.RoundToInt(CharMgr.charList[0].getGraphIdx().pos.z) + MoveDirec.dy[i];
-
-            if(this.getVal(xx, zz) == (int)GraphObjType.None)
-            {
-                this.pet.gameObject.transform.localPosition = new Vector3(xx + 0.5f, 0, zz + 0.5f);
-                break;
-            }
-        }
-
-        this.pet.starFollow();
-    }
-
-    /// <summary>
-    /// 移除宠物
-    /// </summary>
-    public void removePet()
-    {
-        if (this.pet == null) return;
-
-        this.pet.stopFollow();
-
-        ObjPool.instance.backObj(this.pet.gameObject, (go) =>
-        {
-            ObjTool.instance.setNameWithChild(go, GraphObjType.Pet.ToString());
-        });
-
-        this.pet = null;
-    }
-
-    /// <summary>
-    /// 根据CharMgr刷新角色在二维数组上的标记
-    /// </summary>
-    public void refreshChar()
-    {
-        List<CharMgr> chars = CharMgr.charList;
-        List<Vector2> curCharGraphIdx = new List<Vector2>();
-        chars.ForEach((val) =>
-        {
-            var tem = val.getGraphIdx();
-            if (!tem.flag) return;
-
-            Vector2 graphIdx = new Vector2(tem.pos.x, tem.pos.z);
-            curCharGraphIdx.Add(graphIdx);
-        });
-
-        this.charGraphIdx.ForEach((val) =>
-        {
-            this.setVal(Mathf.RoundToInt(val.x), Mathf.RoundToInt(val.y), (int)GraphObjType.None);
-        });
-
-        curCharGraphIdx.ForEach((val) =>
-        {
-            this.setVal(Mathf.RoundToInt(val.x), Mathf.RoundToInt(val.y), (int)GraphObjType.Char);
-        });
-
-        this.charGraphIdx = curCharGraphIdx;
     }
 
     /// <summary>

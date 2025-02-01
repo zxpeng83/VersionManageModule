@@ -26,15 +26,7 @@ public class HudUI : MonoBehaviour
 
         switch (idx)
         {
-            case 0:
-                GameControllMgr.instance.changeMode(nameof(AStarNode));
-                break;
-            case 1:
-                GameControllMgr.instance.changeMode(nameof(FlowFieldNode));
-                break;
-            case 2:
-                GameControllMgr.instance.changeMode(nameof(RayCastNode));
-                break;
+            
         }
     }
 }
