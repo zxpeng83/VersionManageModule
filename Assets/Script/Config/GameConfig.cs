@@ -1,3 +1,6 @@
+using System;
+using Unity.VisualScripting;
+
 namespace GameConfig
 {
     /// <summary>
@@ -36,6 +39,24 @@ namespace GameConfig
 
     public class TreeNode
     {
+        public TreeNode()
+        {
+            
+        }
+        public TreeNode(TreeNode node)
+        {
+            this.xLeft = node.xLeft;
+            this.xRight = node.xRight;
+            this.zBottom = node.zBottom;
+            this.zTop = node.zTop;
+
+            this.lTree = node.lTree;
+            this.rTree = node.rTree;
+
+            this.count = node.count;
+
+            this.type = node.type;
+        }
         //当前节点对应的二维区间
         public int xLeft = -1;
         public int xRight = -1;

@@ -9,13 +9,13 @@ public class VersionManageNode : IFsmNode
 
     public void OnEnter()
     {
-
+        GameControllMgr.instance.reset();
         //throw new System.NotImplementedException();
     }
 
     public void OnExit()
     {
-
+        GameControllMgr.instance.reset();
         //throw new System.NotImplementedException();
     }
 }

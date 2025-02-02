@@ -296,7 +296,7 @@ GameObject:
   - component: {fileID: 337234759}
   - component: {fileID: 337234758}
   m_Layer: 5
-  m_Name: Version
+  m_Name: CurVersionTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -630,7 +630,7 @@ GameObject:
   - component: {fileID: 1287068114}
   - component: {fileID: 1287068113}
   m_Layer: 5
-  m_Name: Button
+  m_Name: ResetButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1892,7 +1892,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Version1
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2128,13 +2128,7 @@ MonoBehaviour:
   m_ItemImage: {fileID: 0}
   m_Value: 0
   m_Options:
-    m_Options:
-    - m_Text: Version1
-      m_Image: {fileID: 0}
-    - m_Text: Version2
-      m_Image: {fileID: 0}
-    - m_Text: Version3
-      m_Image: {fileID: 0}
+    m_Options: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2779,6 +2773,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropDown: {fileID: 5950355018027070}
+  resetBtn: {fileID: 1287068111}
+  curVersionTxt: {fileID: 337234756}
 --- !u!114 &8745264479953109634
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -147,7 +147,7 @@ public class GraphMgr: MonoBehaviour
     /// <param name="type"></param>
     public bool putCube(Vector3 pos, GraphObjType type)
     {
-        if (type != GraphObjType.Red && type != GraphObjType.Green || type != GraphObjType.Blue) return false;
+        if (type != GraphObjType.Red && type != GraphObjType.Green && type != GraphObjType.Blue) return false;
 
         GameObject obj = ObjPool.instance.getObj(type.ToString(), (obj) =>
         {
@@ -179,7 +179,7 @@ public class GraphMgr: MonoBehaviour
     /// <param name="type">要清除的类型,全部清除</param>
     public void removeCube(GraphObjType type)
     {
-        if (type != GraphObjType.Red && type != GraphObjType.Green || type != GraphObjType.Blue) return;
+        if (type != GraphObjType.Red && type != GraphObjType.Green && type != GraphObjType.Blue) return;
 
         GameObject[] gos = new GameObject[this.graphAnchor.transform.childCount];
 
