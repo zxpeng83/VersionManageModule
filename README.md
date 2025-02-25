@@ -227,4 +227,6 @@ author：张晓鹏
 
 ## 4. 演示视频
 
+https://www.bilibili.com/video/BV1oHPaeXEnK
+
 <video src="README.assets/版本管理-kd树划分+可持久化线段树演示视频.mp4"></video>
